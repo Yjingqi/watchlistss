@@ -22,7 +22,7 @@ app.config['SECRET_KEY'] = 'dev'
 
 db = SQLAlchemy(app)
 
-# 创建数据库模型类
+# 创建数据库模型
 class User(db.Model,UserMixin):
     id = db.Column(db.Integer,primary_key=True) # 主键
     name = db.Column(db.String(20)) 
