@@ -2,7 +2,9 @@ import os
 import unittest
 
 
-from app import app,db,Movie,User
+from blog import db,app
+from blog.models import Movie,User
+
 
 class WatchlistTestCase(unittest.TestCase):
     def setUp(self):
