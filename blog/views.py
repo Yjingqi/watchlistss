@@ -1,35 +1,10 @@
-from blog import app,db
-import click
-from flask import request,redirect,url_for,flash,render_template
+import datetime
+
+from blog import db,app
+from flask import redirect,url_for,flash,render_template,request
 from flask_login import login_user,logout_user,login_required,current_user
-from blog.models import User,Movie
+from blog.models import User,Ariticles
 # 首页
-
-@app.cli.command()
-def forge():
-    db.create_all()
-    name = "Bruce"
-    movies = [
-        {'title':'杀破狼','year':'2003'},
-        {'title':'扫毒','year':'2018'},
-        {'title':'捉妖记','year':'2016'},
-        {'title':'囧妈','year':'2020'},
-        {'title':'葫芦娃','year':'1989'},
-        {'title':'玻璃盒子','year':'2020'},
-        {'title':'调酒师','year':'2020'},
-        {'title':'釜山行','year':'2017'},
-        {'title':'导火索','year':'2005'},
-        {'title':'叶问','year':'2015'}
-    ]
-    user = User(name=name)
-    db.session.add(user)
-    for m in movies:
-        movie = Movie(title=m['title'],year=m['year'])
-        db.session.add(movie)
-    db.session.commit()
-    click.echo('数据导入完成')
-
-
 @app.route('/',methods=['GET','POST'])
 def index():
     if request.method == 'POST':
@@ -37,42 +12,46 @@ def index():
             return redirect(url_for('index'))
         # 获取表单的数据
         title = request.form.get('title')
-        year = request.form.get('year')
+        content = request.form.get('content')   # 博文内容
+        author = request.form.get('author')    # 作者
 
-        # 验证title，year不为空，并且title长度不大于60，year的长度不大于4
-        if not title or not year or len(year)>4 or len(title)>60:
+        # 验证title，content,author,pubdate不为空，并且title长度不大于60
+        if not title or not content or not author or len(title)>60:
             flash('输入错误')  # 错误提示
             return redirect(url_for('index'))  # 重定向回主页
         
-        movie = Movie(title=title,year=year)  # 创建记录
-        db.session.add(movie)  # 添加到数据库会话
+        ariticle = Ariticles(title=title,content=content,author=author)  # 创建记录
+        db.session.add(ariticle)  # 添加到数据库会话
         db.session.commit()   # 提交数据库会话
         flash('数据创建成功')
         return redirect(url_for('index'))
 
-    movies = Movie.query.all()
-    return render_template('index.html',movies=movies)
-# 编辑电影信息页面
-@app.route('/movie/edit/<int:movie_id>',methods=['GET','POST'])
+    ariticles = Ariticles.query.all()
+    return render_template('index.html',ariticles=ariticles)
+
+# 编辑信息页面
+@app.route('/ariticle/edit/<int:ariticle_id>',methods=['GET','POST'])
 @login_required
-def edit(movie_id):
-    movie = Movie.query.get_or_404(movie_id)
+def edit(ariticle_id):
+    ariticle = Ariticles.query.get_or_404(ariticle_id)
 
     if request.method == 'POST':
         title = request.form['title']
-        year = request.form['year']
-
-        if not title or not year or len(year)>4 or len(title)>60:
+        content = request.form['content']
+        author = request.form['author']
+        if not title or not content or not author or len(title)>60:
             flash('输入错误')
-            return redirect(url_for('edit'),movie_id=movie_id)
+            return redirect(url_for('edit'),ariticle_id=ariticle_id)
         
-        movie.title = title
-        movie.year = year
+        ariticle.title = title
+        ariticle.content = content
+        ariticle.author = author
         db.session.commit()
-        flash('电影信息已经更新')
+        flash('博文信息已经更新')
         return redirect(url_for('index'))
-    return render_template('edit.html',movie=movie)
+    return render_template('edit.html',ariticle=ariticle,)
 
+# 设置
 @app.route('/settings',methods=['GET','POST'])
 @login_required
 def settings():
@@ -91,11 +70,11 @@ def settings():
     return render_template('settings.html')
 
 # 删除信息
-@app.route('/movie/delete/<int:movie_id>',methods=['POST'])
+@app.route('/ariticle/delete/<int:ariticle_id>',methods=['POST'])
 @login_required    
-def delete(movie_id):
-    movie = Movie.query.get_or_404(movie_id)
-    db.session.delete(movie)
+def delete(ariticle_id):
+    ariticle = Ariticles.query.get_or_404(ariticle_id)
+    db.session.delete(ariticle)
     db.session.commit()
     flash('删除数据成功')
     return redirect(url_for('index'))

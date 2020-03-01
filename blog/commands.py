@@ -1,4 +1,4 @@
-from blog.models import User,Movie
+from blog.models import User,Ariticles
 import click 
 from blog import db,app
 
@@ -7,22 +7,14 @@ def forge():
     db.create_all()
     name = "Bruce"
     movies = [
-        {'title':'杀破狼','year':'2003'},
-        {'title':'扫毒','year':'2018'},
-        {'title':'捉妖记','year':'2016'},
-        {'title':'囧妈','year':'2020'},
-        {'title':'葫芦娃','year':'1989'},
-        {'title':'玻璃盒子','year':'2020'},
-        {'title':'调酒师','year':'2020'},
-        {'title':'釜山行','year':'2017'},
-        {'title':'导火索','year':'2005'},
-        {'title':'叶问','year':'2015'}
+        {'title':'湖南农业大学','author':'Yyjingqi','content':'博文内容'},
     ]
     user = User(name=name)
     db.session.add(user)
     for m in movies:
-        movie = Movie(title=m['title'],year=m['year'])
-        db.session.add(movie)
+        Ariticle = Ariticles(title=m['title'],author=m['author'],content=m['content'])
+        db.session.add(Ariticle
+        )
     db.session.commit()
     click.echo('数据导入完成')
 
