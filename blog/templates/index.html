@@ -16,7 +16,7 @@
         <span class="float-right">
             <a class="vbd"
                 href="#"
-                target="_blank" title="在百度视频中查找此电影">wenjing</a>
+                target="_blank" title="博文详情">wenjing</a>
         </span>
         {% if current_user.is_authenticated %}
         <span class="float-right">
@@ -24,7 +24,7 @@
         </span>
         <span class="float-right">
             <form class="inline-form" action="{{ url_for('delete',ariticle_id=ariticle.id) }}" method="post">
-                <input class="btn" type="submit" name='delete' value="删除" onclick="return confirm('确定删除吗？')">
+                <input class="btn btn-warning" type="submit" name='delete' value="删除" onclick="return confirm('确定删除吗？')">
             </form>
         </span>
         {% endif %}

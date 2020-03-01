@@ -3,6 +3,7 @@ body{
     margin: auto;
     font-size:14px;
     font-family: Arial, Helvetica, sans-serif;
+    background-image: url('../static/images/6.jpg');
 }
 /* 页脚 footer */
 footer{
@@ -41,7 +42,8 @@ nav ul{
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background: #333333
+    background: #333333;
+    border-radius:'5px'
 }
 nav li {
     float: left;
